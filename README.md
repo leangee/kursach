@@ -42,6 +42,8 @@ pip install -r requirements.txt
 python manage.py migrate
 python manage.py createsuperuser
 daphne -b 0.0.0.0 -p 8000 config.asgi:application
+
+python manage.py runserver (рекомендуется)
 \`\`\`
 
 # Frontend
