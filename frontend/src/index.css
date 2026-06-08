@@ -1,0 +1,316 @@
+:root {
+  --primary: #ED5761;
+  --primary-dark: #c4454e;
+  --primary-light: #f2888f;
+  
+  --secondary: #404B62;
+  --secondary-dark: #2d3546;
+  --secondary-light: #5a6782;
+  
+  --white: #FFFFFF;
+  --black: #161515;
+  
+  --bg-light: #FFFFFF;
+  --bg-dark: #161515;
+  --bg-white: #FFFFFF;
+  --bg-secondary: #404B62;
+  
+  --text-dark: #161515;
+  --text-light: #FFFFFF;
+  --text-muted: #6c757d;
+  
+  --gradient-primary: linear-gradient(135deg, #ED5761 0%, #c4454e 100%);
+  --gradient-dark: linear-gradient(135deg, #404B62 0%, #2d3546 100%);
+}
+
+body {
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: white;
+}
+
+.btn-outline-primary {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.btn-outline-primary:hover {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+  color: white;
+}
+.btn-secondary:hover {
+  background-color: var(--secondary-dark);
+  border-color: var(--secondary-dark);
+}
+
+.btn-outline-secondary {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+.btn-outline-secondary:hover {
+  background-color: var(--secondary);
+  color: white;
+}
+
+.navbar-dark {
+  background-color: var(--secondary) !important;
+}
+.navbar-dark .navbar-brand {
+  color: var(--white);
+}
+.navbar-dark .nav-link:hover {
+  color: var(--primary) !important;
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.card-header {
+  background-color: var(--primary);
+  color: white;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.hero-section {
+  background: var(--gradient-dark);
+  color: white;
+}
+
+.badge.bg-primary {
+  background-color: var(--primary) !important;
+  color: white;
+}
+.badge.bg-success {
+  background-color: var(--primary) !important;
+}
+.badge.bg-warning {
+  background-color: var(--primary) !important;
+  color: white;
+}
+.badge.bg-danger {
+  background-color: var(--primary-dark) !important;
+}
+.badge.bg-info {
+  background-color: var(--secondary) !important;
+}
+.badge.bg-secondary {
+  background-color: var(--secondary-light) !important;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--primary-dark);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem rgba(237, 87, 97, 0.25);
+}
+
+.page-link {
+  color: var(--primary);
+}
+.page-link:hover {
+  color: var(--primary-dark);
+}
+.page-item.active .page-link {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.alert-primary {
+  background-color: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+.alert-success {
+  background-color: #d4edda;
+  border-color: var(--primary);
+  color: #155724;
+}
+.alert-info {
+  background-color: #d1ecf1;
+  border-color: var(--secondary);
+  color: #0c5460;
+}
+.alert-warning {
+  background-color: #fff3cd;
+  border-color: var(--primary);
+  color: #856404;
+}
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: var(--primary);
+  color: #721c24;
+}
+
+.footer {
+  background-color: var(--secondary);
+  color: var(--white);
+  padding: 2rem 0;
+  margin-top: 3rem;
+}
+.footer a {
+  color: var(--white);
+}
+.footer a:hover {
+  color: var(--primary);
+}
+
+.bg-primary-custom {
+  background-color: var(--primary);
+}
+.text-primary-custom {
+  color: var(--primary);
+}
+.bg-secondary-custom {
+  background-color: var(--secondary);
+}
+.bg-white-custom {
+  background-color: var(--white);
+}
+.bg-black-custom {
+  background-color: var(--black);
+}
+
+* {
+  --bs-primary: #ED5761 !important;
+  --bs-primary-rgb: 237, 87, 97 !important;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
+  background-color: #ED5761 !important;
+  border-color: #ED5761 !important;
+}
+
+.navbar-dark {
+  background-color: #404B62 !important;
+}
+
+.bg-primary {
+  background-color: #ED5761 !important;
+}
+
+.text-primary {
+  color: #ED5761 !important;
+}
+
+a {
+  color: #ED5761 !important;
+}
+
+a:hover {
+  color: #c4454e !important;
+}
+
+.btn-outline-primary {
+  border-color: #ED5761 !important;
+  color: #ED5761 !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #ED5761 !important;
+  color: white !important;
+}
+
+.progress-bar,
+.badge.bg-primary,
+.alert-primary {
+  background-color: #ED5761 !important;
+}
+
+.form-check-input:checked {
+  background-color: #ED5761 !important;
+  border-color: #ED5761 !important;
+}
+
+.nav-pills .nav-link.active,
+.nav-tabs .nav-link.active {
+  background-color: #ED5761 !important;
+  color: white !important;
+}
+
+.dropdown-item:active {
+  background-color: #ED5761 !important;
+}
+
+.list-group-item.active {
+  background-color: #ED5761 !important;
+  border-color: #ED5761 !important;
+}
+
+.page-link {
+  color: #ED5761 !important;
+}
+
+.page-item.active .page-link {
+  background-color: #ED5761 !important;
+  border-color: #ED5761 !important;
+  color: white !important;
+}
+
+.pagination .page-link:hover {
+  color: #c4454e !important;
+}
+
+.hero-section,
+.bg-dark {
+  background-color: #404B62 !important;
+}
+
+.navbar {
+  margin-bottom: 0 !important;
+}
+
+.container.mt-4,
+.container.mt-5,
+.container.py-4,
+.container.py-5 {
+  padding-top: 0 !important;
+}
+
+main {
+  padding-top: 0 !important;
+}
+
+body > div:first-of-type {
+  margin-top: 0 !important;
+}
+
+/* Убираем отступ у первого контейнера после навбара */
+.container:first-of-type {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
