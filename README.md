@@ -125,9 +125,6 @@ detailing-studio/
 │
 └── README.md
 
-text
-
----
 
 ## 4. Требования к окружению
 
