@@ -5,372 +5,238 @@
 
 ---
 
-## Содержание
-
-1. [О проекте](#1-о-проекте)
-2. [Технологический стек](#2-технологический-стек)
-3. [Структура репозитория](#3-структура-репозитория)
-4. [Требования к окружению](#4-требования-к-окружению)
-5. [Установка и настройка Backend](#5-установка-и-настройка-backend)
-6. [Установка и настройка Frontend](#6-установка-и-настройка-frontend)
-7. [Запуск приложения](#7-запуск-приложения)
-8. [Переменные окружения](#8-переменные-окружения)
-9. [API — эндпоинты](#9-api--эндпоинты)
-10. [Функциональность](#10-функциональность)
-11. [Механика заказов](#11-механика-заказов)
-12. [Администрирование](#12-администрирование)
-13. [Тестирование](#13-тестирование)
-
----
-
 ## 1. О проекте
 
-**DetailingStudio** — веб-приложение для автоматизации работы детейлинг-студии.  
-Поддерживает три режима работы:
+DetailingStudio — веб-приложение для автоматизации работы детейлинг-студии.
 
-- **Каталог услуг** — просмотр, фильтрация по категориям и поиск услуг.
-- **Запись на услуги** — создание, отслеживание и управление заказами.
-- **Портфолио** — просмотр выполненных работ с фото «до/после» и системой избранного.
-
-Авторизованные пользователи получают доступ к личному кабинету.  
-При изменении статуса заказа приложение мгновенно обновляет интерфейс через WebSocket.
+Основные возможности:
+- Просмотр услуг с фильтрацией по категориям и поиском
+- Запись на услуги с выбором даты и времени
+- Просмотр и отслеживание статуса заказов
+- Портфолио работ с фото до/после
+- Система избранного
+- Real-time уведомления об изменении статуса заказа через WebSocket
+- JWT аутентификация
+- Роли: клиент, мастер, администратор
 
 ---
 
 ## 2. Технологический стек
 
-### Backend
-| Компонент | Технология |
-|---|---|
-| Язык | Python 3.11 |
-| Фреймворк | Django 5.0 + Django REST Framework 3.15 |
-| Аутентификация | JWT (djangorestframework-simplejwt) |
-| WebSocket | Django Channels 4.1 + Daphne 4.1 |
-| База данных | SQLite / PostgreSQL |
-| CORS | django-cors-headers |
-| Фильтрация | django-filter |
+Backend:
+- Python 3.11
+- Django 5.0
+- Django REST Framework
+- JWT (djangorestframework-simplejwt)
+- Django Channels 4.1 (WebSocket)
+- Daphne 4.1 (ASGI сервер)
+- SQLite / PostgreSQL
 
-### Frontend
-| Компонент | Технология |
-|---|---|
-| Язык | JavaScript (ES2022) + JSX |
-| Фреймворк | React 18 |
-| Маршрутизация | React Router 6 |
-| HTTP-клиент | Axios (с JWT-интерцепторами) |
-| Кэширование | React Query |
-| Сборщик | Create React App |
-| Стили | Bootstrap 5 + CSS |
+Frontend:
+- React 18
+- React Router 6
+- Axios
+- React Query (кэширование)
+- Bootstrap 5
+- CSS
 
 ---
 
 ## 3. Структура репозитория
+
 detailing-studio/
-├── backend/ # Django REST API + Channels
-│ ├── config/
-│ │ ├── init.py
-│ │ ├── settings.py
-│ │ ├── urls.py
-│ │ ├── asgi.py # ASGI + WebSocket
-│ │ └── wsgi.py
-│ ├── apps/
-│ │ ├── users/ # Аутентификация и профиль
-│ │ │ ├── models.py # Расширенная модель User
-│ │ │ ├── serializers.py
-│ │ │ ├── views.py
-│ │ │ ├── urls.py
-│ │ │ └── admin.py
-│ │ ├── services/ # Услуги и категории
-│ │ │ ├── models.py # ServiceCategory, Service
-│ │ │ ├── serializers.py
-│ │ │ ├── views.py
-│ │ │ └── urls.py
-│ │ └── orders/ # Заказы, портфолио, WebSocket
-│ │ ├── models.py # Order, CarPost, Comment
-│ │ ├── serializers.py
-│ │ ├── views.py
-│ │ ├── urls.py
-│ │ ├── consumers.py # WebSocket consumer
-│ │ ├── routing.py
-│ │ ├── signals.py # Сигналы для уведомлений
-│ │ └── admin.py
-│ ├── manage.py
-│ ├── requirements.txt
-│ └── .env.example
+├── backend/
+│   ├── config/
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── asgi.py
+│   ├── apps/
+│   │   ├── users/
+│   │   │   ├── models.py
+│   │   │   ├── views.py
+│   │   │   ├── serializers.py
+│   │   │   └── urls.py
+│   │   ├── services/
+│   │   │   ├── models.py
+│   │   │   ├── views.py
+│   │   │   ├── serializers.py
+│   │   │   └── urls.py
+│   │   └── orders/
+│   │       ├── models.py
+│   │       ├── views.py
+│   │       ├── serializers.py
+│   │       ├── consumers.py
+│   │       ├── routing.py
+│   │       ├── signals.py
+│   │       └── urls.py
+│   ├── manage.py
+│   ├── requirements.txt
+│   └── .env.example
 │
-├── frontend/ # React SPA
-│ ├── public/
-│ │ └── index.html
-│ ├── src/
-│ │ ├── components/
-│ │ │ └── Navbar.js
-│ │ ├── pages/
-│ │ │ ├── HomePage.js
-│ │ │ ├── ServicesPage.js
-│ │ │ ├── OrdersPage.js
-│ │ │ ├── OrderDetailPage.js
-│ │ │ ├── CreateOrderPage.js
-│ │ │ ├── PortfolioPage.js
-│ │ │ ├── PortfolioDetailPage.js
-│ │ │ ├── LoginPage.js
-│ │ │ ├── RegisterPage.js
-│ │ │ ├── ProfilePage.js
-│ │ │ └── AdminPanel.js
-│ │ ├── contexts/
-│ │ │ ├── AuthContext.js
-│ │ │ └── WebSocketContext.js
-│ │ ├── App.js
-│ │ └── index.js
-│ ├── package.json
-│ └── .env.example
+├── frontend/
+│   ├── public/
+│   │   └── images/
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── Navbar.js
+│   │   ├── pages/
+│   │   │   ├── HomePage.js
+│   │   │   ├── ServicesPage.js
+│   │   │   ├── OrdersPage.js
+│   │   │   ├── OrderDetailPage.js
+│   │   │   ├── CreateOrderPage.js
+│   │   │   ├── PortfolioPage.js
+│   │   │   ├── PortfolioDetailPage.js
+│   │   │   ├── LoginPage.js
+│   │   │   ├── RegisterPage.js
+│   │   │   ├── ProfilePage.js
+│   │   │   └── AdminPanel.js
+│   │   ├── contexts/
+│   │   │   ├── AuthContext.js
+│   │   │   └── WebSocketContext.js
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── package.json
+│   └── .env.example
 │
+├── .gitignore
 └── README.md
-
-
-## 4. Требования к окружению
-
-| Инструмент | Версия |
-|---|---|
-| Python | ≥ 3.11 |
-| Node.js | ≥ 18.0 |
-| npm | ≥ 9.0 |
-| Git | ≥ 2.40 |
 
 ---
 
-## 5. Установка и настройка Backend
+## 4. Требования к окружению
 
-### 5.1. Клонирование репозитория
+- Python >= 3.11
+- Node.js >= 18.0
+- npm >= 9.0
+- Git
 
-``bash
-git clone https://github.com/leangee/detailing-studio.git
-cd detailing-studio/backend
-5.2. Виртуальное окружение
+---
 
-bash
-# Создание
+## 5. Установка и запуск
+
+### Backend
+
+cd backend
 python -m venv venv
-
-# Активация (Windows)
-venv\Scripts\activate
-
-# Активация (Linux / macOS)
 source venv/bin/activate
-5.3. Установка зависимостей
-
-bash
 pip install -r requirements.txt
-requirements.txt:
-
-text
-Django==5.0.6
-djangorestframework==3.15.1
-djangorestframework-simplejwt==5.3.0
-django-cors-headers==4.3.1
-channels==4.1.0
-daphne==4.1.0
-django-filter==24.2
-Pillow==10.3.0
-python-dotenv==1.0.1
-5.4. Переменные окружения
-
-bash
 cp .env.example .env
-# Отредактировать .env (см. раздел 8)
-5.5. Миграции и начальные данные
-
-bash
-python manage.py makemigrations users services orders
 python manage.py migrate
-
-# Создание суперпользователя (администратора)
 python manage.py createsuperuser
-5.6. Запуск тестов
-
-bash
-python manage.py test
-6. Установка и настройка Frontend
-
-6.1. Переход в директорию
-
-bash
-cd ../frontend
-6.2. Установка зависимостей
-
-bash
-npm install
-6.3. Переменные окружения
-
-bash
-cp .env.example .env
-# Отредактировать .env (см. раздел 8)
-7. Запуск приложения
-
-Backend
-
-WebSocket требует ASGI-сервера. Используйте Daphne:
-
-bash
-cd detailing-studio/backend
-source venv/bin/activate
 daphne -p 8000 config.asgi:application
-Альтернативно (только HTTP, без WebSocket):
 
-bash
-python manage.py runserver
-Frontend
+### Frontend
 
-bash
-cd detailing-studio/frontend
+cd frontend
+npm install
+cp .env.example .env
 npm start
-Приложение откроется по адресу http://localhost:3000
-Backend доступен по адресу http://localhost:8000
-Django Admin — http://localhost:8000/admin/
 
-8. Переменные окружения
+Приложение будет доступно:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000/api
+- Admin панель: http://localhost:8000/admin
 
-backend/.env
+---
 
-env
-SECRET_KEY=django-insecure-your-secret-key-here-change-in-production
+## 6. Переменные окружения
+
+### backend/.env
+
+SECRET_KEY=your-secret-key
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
+CORS_ALLOWED_ORIGINS=http://localhost:3000
 
-# JWT
-JWT_ACCESS_TOKEN_LIFETIME=30       # минуты
-JWT_REFRESH_TOKEN_LIFETIME=1440    # минуты (1 сутки)
+### frontend/.env
 
-# CORS
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-frontend/.env
-
-env
 REACT_APP_API_URL=http://localhost:8000/api
 REACT_APP_WS_URL=ws://localhost:8000
-9. API — эндпоинты
 
-Аутентификация (/api/auth/)
+---
 
-Метод	Эндпоинт	Доступ	Описание
-POST	/api/auth/register/	Все	Регистрация
-POST	/api/auth/login/	Все	Получение JWT access/refresh
-POST	/api/auth/token/refresh/	Все	Обновление access-токена
-GET	/api/auth/profile/	Авторизован	Профиль пользователя
-PUT/PATCH	/api/auth/profile/	Авторизован	Обновление профиля
-Услуги (/api/services/)
+## 7. API Эндпоинты
 
-Метод	Эндпоинт	Доступ	Описание
-GET	/api/services/	Все	Список услуг
-GET	/api/services/?category=1	Все	Фильтр по категории
-GET	/api/services/?search=текст	Все	Поиск по названию/описанию
-GET	/api/services/{id}/	Все	Детали услуги
-Категории (/api/services/categories/)
+Аутентификация (/api/auth/):
+- POST /api/auth/register/ - регистрация
+- POST /api/auth/login/ - вход (JWT)
+- POST /api/auth/token/refresh/ - обновление токена
+- GET /api/auth/profile/ - профиль
 
-Метод	Эндпоинт	Доступ	Описание
-GET	/api/services/categories/	Все	Список категорий
-Заказы (/api/orders/orders/)
+Услуги (/api/services/):
+- GET /api/services/ - список услуг
+- GET /api/services/categories/ - список категорий
+- GET /api/services/{id}/ - детали услуги
 
-Метод	Эндпоинт	Доступ	Описание
-GET	/api/orders/orders/	Авторизован	Список заказов
-POST	/api/orders/orders/	Авторизован	Создать заказ
-GET	/api/orders/orders/{id}/	Авторизован	Детали заказа
-PATCH	/api/orders/orders/{id}/	Мастер/Админ	Изменить статус
-POST	/api/orders/orders/{id}/cancel/	Клиент	Отменить заказ
-POST	/api/orders/orders/{id}/add_comment/	Клиент	Добавить отзыв
-Портфолио (/api/orders/car-posts/)
+Заказы (/api/orders/orders/):
+- GET /api/orders/orders/ - список заказов
+- POST /api/orders/orders/ - создание заказа
+- GET /api/orders/orders/{id}/ - детали заказа
+- POST /api/orders/orders/{id}/cancel/ - отмена
+- POST /api/orders/orders/{id}/add_comment/ - добавить отзыв
 
-Метод	Эндпоинт	Доступ	Описание
-GET	/api/orders/car-posts/	Все	Список работ
-GET	/api/orders/car-posts/{id}/	Все	Детали работы
-POST	/api/orders/car-posts/{id}/toggle_favorite/	Авторизован	Добавить/удалить из избранного
-GET	/api/orders/car-posts/my_favorites/	Авторизован	Избранные работы
-WebSocket
+Портфолио (/api/orders/car-posts/):
+- GET /api/orders/car-posts/ - список работ
+- GET /api/orders/car-posts/{id}/ - детали работы
+- POST /api/orders/car-posts/{id}/toggle_favorite/ - избранное
+- GET /api/orders/car-posts/my_favorites/ - избранные работы
 
-URL	Описание
-ws://localhost:8000/ws/orders/{order_id}/	Real-time обновление статуса заказа
-ws://localhost:8000/ws/notifications/	Персональные уведомления пользователя
-Формат сообщения о статусе:
+---
 
-json
+## 8. WebSocket
+
+Подключение:
+- ws://localhost:8000/ws/orders/{order_id}/
+
+Формат сообщения при изменении статуса:
 {
   "type": "status_update",
   "order_id": 5,
   "old_status": "Новая",
-  "new_status": "В работе",
-  "updated_at": "08.06.2026 15:30"
+  "new_status": "В работе"
 }
-10. Функциональность
 
-Неавторизованный пользователь
+---
 
-Просмотр главной страницы с каруселью
-Просмотр каталога услуг с фильтрацией и поиском
-Просмотр портфолио работ
-Регистрация и вход в систему
-Авторизованный пользователь (Клиент)
+## 9. Функциональность
 
-Все возможности неавторизованного пользователя
-Запись на услуги (создание заказа)
-Просмотр и отслеживание своих заказов
-Отмена заказа (в статусе «Новая»)
-Добавление отзывов к выполненным заказам
-Добавление работ в избранное
-Редактирование профиля
-Real-time уведомления об изменении статуса заказа
-Мастер
+Неавторизованный пользователь:
+- Просмотр главной страницы с каруселью
+- Просмотр услуг с фильтрацией и поиском
+- Просмотр портфолио
+- Регистрация и вход
 
-Просмотр назначенных заказов
-Изменение статуса заказа (Подтверждена → В работе → Выполнена)
-Real-time уведомления о новых заказах
-Администратор
+Клиент:
+- Все функции неавторизованного
+- Запись на услуги
+- Управление заказами
+- Отмена заказа
+- Добавление отзывов
+- Редактирование профиля
+- Real-time уведомления
 
-Управление услугами и категориями
-Управление заказами всех клиентов
-Управление портфолио
-Управление пользователями
-Полный доступ к Django Admin
-11. Механика заказов
+Мастер:
+- Просмотр назначенных заказов
+- Изменение статуса заказа
 
-Правило	Описание
-Создание	Только авторизованные клиенты
-Статусы	Новая → Подтверждена → В работе → Выполнена / Отменена
-Отмена	Доступна только в статусе «Новая»
-Real-time	При смене статуса уведомление через WebSocket
-Отзывы	Можно оставить только после выполнения заказа
-Просмотры	Автоматически увеличиваются при открытии детальной страницы портфолио
-Фильтрация	По категориям через параметр category
-Поиск	По полям title и description
-Пагинация	10 услуг на страницу
-Избранное	Сохраняется в профиле пользователя
-12. Администрирование
+Администратор:
+- Полное управление через Django Admin
 
-Django Admin доступен по адресу /admin/.
+---
 
-Модели в админке
+## 10. Роли пользователей
 
-Модель	Поля	Особенности
-User	username, email, role, phone, avatar, bio	Расширенная модель с ролями (client/master/admin)
-ServiceCategory	title, description, sort_order	Сортировка
-Service	category, title, description, price, duration_minutes, image	CRUD услуг
-Order	client, service, car_model, scheduled_date, status, master	Фильтр по статусу, editable статус
-CarPost	client, title, content, before_photo, after_photo, views	Портфолио работ
-Comment	order, author, text, rating	Отзывы клиентов
-13. Тестирование
+| Роль | Права |
+|------|-------|
+| client | Создание заказов, просмотр своих заказов, избранное |
+| master | Просмотр и изменение статуса назначенных заказов |
+| admin | Полный доступ к Django Admin, управление всеми данными |
 
-bash
-# Backend — запуск всех тестов
-cd backend
-python manage.py test
+---
 
-# Тесты конкретного приложения
-python manage.py test users
-python manage.py test services
-python manage.py test orders
-Тесты покрывают:
 
-Регистрацию и аутентификацию (JWT)
-CRUD операции с заказами
-Права доступа (IsAuthorOrReadOnly, IsMasterOrAdmin)
-Создание и получение отзывов
-Фильтрацию и поиск
-WebSocket подключения и уведомления
-Автор
+## 11. Автор
+
+**Студент:** Луговенко Владислав Максимович 
+**Группа:** ПИЖ-б-о-24-1 
