@@ -35,15 +35,15 @@
 - Node.js 18+
 
 # Backend
-\`\`\`bash
+
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate (!!!ВАЖНО!!!)
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py createsuperuser
 daphne -b 0.0.0.0 -p 8000 config.asgi:application
-\`\`\`
+
 
 # Frontend
 \`\`\`bash
